@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v1.0 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v1.1 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -97,7 +97,7 @@ Lifecycle of the **location context of an app session** (created when a partner 
 | T5 | Device location off | Device location setting switched on | — | Available | Actions resume carrying coordinate, accuracy and mock flag (R2). Nothing is backfilled for actions already recorded. |
 | T6 | Available · Device location off | Partner user performs an action | Dispatched by the §3a action chart | *No change* | Record carries: the signed-in user's identifier, CSP and role (R6a, R6b, R6c, G5); coordinate when a reading is available; the accuracy radius in metres and the mock flag whenever a coordinate is present (R2a, R2b, G1); location status always (R3a, G2). The location is fetched when the action happens (R2c) and the action is never held to wait for one (P1, G3). |
 | T7 | Undetermined · Available · Device location off | The signed-in partner user is replaced without the app restarting | — | Undetermined | Context re-evaluated from T1; the new user's identifier, CSP and role established before any of their actions is recorded (R6d, G5); no reading obtained under the previous user is carried into the new user's records. |
-| T8 | Undetermined · Available · Device location off | App session ends | — | Ended | Session location context discarded; no reading is retained by the app between sessions ⚠️ *AI GENERATED — review*. |
+| T8 | Undetermined · Available · Device location off | App session ends | — | Ended | Session location context discarded; no reading is retained by the app between sessions. |
 
 ---
 
@@ -253,15 +253,16 @@ What the platform must be able to do for this feature to exist. Whether these ar
 
 ---
 
-## AI-generated content for review
+## Open questions
 
-| # | Location | What was generated | Basis |
-|---|---|---|---|
-| 1 | §3b T8 | No reading retained by the app between sessions. | Data-minimisation default; not discussed. |
+Recorded as **OV-7**. Each must be closed before sign-off.
 
-**Open question for engineering:** how long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 and MQ-5 for as long as the data is held (R5a); the retention period itself is engineering's to propose.
-
-**Open question for the PM:** R6 requires an identifier, a CSP and a role on every record — enough to name the person without ambiguity. It does **not** require a name or a mobile number. Adding either would make the data readable at a glance but would place direct personal identifiers in every location record, which widens what Legal has to approve. Decide whether the identifier alone is sufficient for your analysis.
+| # | Question | Owner |
+|---|---|---|
+| 1 | How long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 and MQ-5 for as long as the data is held (R5a); the retention period itself is Engineering's to propose. | Engineering |
+| 2 | What range should C-01 carry? The 20 m default is set; the tolerable range depends on what field devices achieve without adding latency (OV-5). | Engineering |
+| 3 | R6 requires an identifier, a CSP and a role on every record — enough to name the person without ambiguity. It does not require a name or a mobile number. Adding either would make the data readable at a glance but would place direct personal identifiers in every location record, widening what Legal must approve. Is the identifier alone sufficient for the analysis? | PM |
+| 4 | Reviewer, and the Legal/DPDP, Android and Analytics consulted names. | PM |
 
 ---
 
@@ -274,4 +275,5 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | **OV-3** — §7 AC citations use `Rn-x MUST NOT` for negative sub-obligations. | The template's `R5b` form is ambiguous when both the MUST and MUST NOT cells are lettered, as several rules here are. Negative obligations are cited as `R4-a MUST NOT`. | Without it, coverage of the MUST NOT column cannot be checked mechanically. | Ashish Raj (PM), 29 Jul 2026 |
 | **OV-4** — §4 requires a block per screen the feature touches. | No screen blocks appear; §4 states that no screen is added or changed. | Every screen involved — the permission flow and the device-location-off prompt — already exists in both apps. Specifying them would create a second home for facts this document does not govern. | Ashish Raj (PM), 30 Jul 2026 |
 | **OV-5** — §5 requires a range for every C-id. | C-01 carries a default of 20 m but no range. | The tolerable range depends on what devices in the field can actually achieve without adding latency, which Engineering is better placed to measure than the PM is to guess. | Ashish Raj (PM), 30 Jul 2026 |
+| **OV-7** — the template defines no Open-questions section. | One is added after §9, replacing the AI-generated-content section now that every generated item has been ruled on. | Four questions remain and two of them are Engineering's, not the PM's. Dropping them to close the section would lose them; leaving an empty review table would say nothing. | Ashish Raj (PM), 30 Jul 2026 |
 | **OV-6** — §7 requires boundary-value and configurability ACs where a limit or a runtime-changeable parameter exists. | Neither group appears. | C-01 is a target the app aims for rather than a threshold that changes behaviour at its edges — AC-CAP-2 covers what happens when it is not met. No other PM-owned numeric limit exists. | Ashish Raj (PM), 30 Jul 2026 |
