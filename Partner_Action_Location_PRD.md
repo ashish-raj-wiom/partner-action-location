@@ -13,7 +13,7 @@
 
 > **No customer outcome.** This is an internal capability; no customer experience changes. Recorded as **OV-1**.
 
-**Boundary.** This spec governs **what must be recorded about where a partner user was when they acted**, in both apps, across every module, service and role (C-03). **Where that data is stored and how it gets there is the implementer's decision** (§9) — this document states the requirement, not the pipeline. It changes no service's behaviour, no state machine and no task outcome. The **customer app is entirely out of scope** (AC-REG-1). Obtaining a location must never make an action slower or less reliable (R5, G3). Location permission is already a precondition for using the CSP app and this spec leaves that flow unchanged (R4a, AC-REG-2); the only change it asks for is the same precondition on the Technician app (R4b). The existing use of location for WiFi scanning during router configuration must continue to work unchanged (AC-REG-3).
+**Boundary.** This spec governs **what must be recorded about where a partner user was when they acted**, in both apps, across every module, service and role (C-03). It changes no service's behaviour, no state machine and no task outcome. The **customer app is entirely out of scope** (AC-REG-1). Obtaining a location must never make an action slower or less reliable (R5, G3). Location permission is already a precondition for using the CSP app and this spec leaves that flow unchanged (R4a, AC-REG-2); the only change it asks for is the same precondition on the Technician app (R4b). The existing use of location for WiFi scanning during router configuration must continue to work unchanged (AC-REG-3).
 
 ### Guardrails — promises that hold on every path
 
@@ -88,7 +88,7 @@ flowchart TD
 
 ### 3b. State transition table — canon
 
-Lifecycle of the **location context of an app session** (created when a partner user opens either app while signed in). The OS-level permission state persists across sessions and belongs to Android, not to this lifecycle; it appears here only as a trigger. The apps' launch-time permission requirement (R4) is existing behaviour and is not this lifecycle's to own — it appears as a Boundary exit in §3a. Neighbouring lifecycles out of scope: every service's own task lifecycles, the customer app's session, and the router-configuration WiFi-scanning flow, which reads the same OS permission but is untouched by this spec.
+Lifecycle of the **location context of an app session** (created when a partner user opens either app while signed in). The OS-level permission state persists across sessions and belongs to Android; it appears here only as a trigger. Neighbouring lifecycles out of scope: the apps' launch-time permission requirement (R4), which governs whether a session may start at all and appears as a Boundary exit in §3a; every service's own task lifecycles; the customer app's session; and the router-configuration WiFi-scanning flow, which reads the same OS permission but is untouched by this spec.
 
 **The five states.** **Undetermined** — session open, permission state not yet evaluated. **Available** — permission granted and device location switched on; readings obtainable. **Device location off** — permission granted but the device's location setting is off. **Permission not available** — permission absent or revoked, while the session continues. **Ended** — the session has closed; terminal.
 
@@ -111,13 +111,13 @@ Lifecycle of the **location context of an app session** (created when a partner 
 
 **Experience intent:** a partner user should never notice this feature. It asks nothing of them beyond the permission the app already requires, and it never interrupts a job.
 
-**No new permission screens.** The CSP app's launch-time permission requirement already exists and is reused as-is (R4a). The Technician app adopts the same requirement (R4b) and should reuse the CSP app's existing screens rather than gaining new ones — so this spec introduces **one** new screen, below.
+The Technician app adopts the CSP app's existing launch-time permission screens (R4b), unchanged.
 
 **Master design file:** **not yet created — named gap.** ⚠️ *AI GENERATED — review*
 
 ### Device-location-off prompt — design link TBD
 
-The one case the existing permission requirement does not cover: permission is granted, but the device's own location setting is off, so no reading can be obtained (T4).
+Permission is granted, but the device's own location setting is off, so no reading can be obtained (T4).
 
 **States:** shown (permission granted and device location switched off — T4) · not shown (device location on, or permission not available — the permission requirement covers that case) ⚠️ *AI GENERATED — review*
 **Freshness:** on detection of the device location setting changing
@@ -281,7 +281,7 @@ All examples use a synthetic partner ⚠️ *AI GENERATED — review*: CSP **WIO
 
 ## 9. Notes for System Capabilities
 
-What the platform must be able to do for this feature to exist. **Whether these are one system or several, where the data lands, and how it gets there is the implementer's design** — this document does not name a store or a transport.
+What the platform must be able to do for this feature to exist. Whether these are one system or several, and how they interact, is the implementer's design.
 
 | Capability | Needed by |
 |---|---|
@@ -325,12 +325,7 @@ Ordered with the decisions that most change the document first.
 | 17 | §5 both interaction notes | The C-01 × C-06 and C-01 × C-02 interactions. | Derived from the parameters. |
 | 18 | §7 all concrete data | Ramesh Kumar, Sunil Yadav, WIOM-GGN-0472, BKG-2026-07-118342, the two Gurugram coordinates, the 2.1 km separation. | Synthetic. Replace with a real case if you want the ACs to double as a production probe. |
 
-**Facts you should know, stated as information rather than requirements:**
-
-- **The CSP app already declares `ACCESS_BACKGROUND_LOCATION`** — requested after foreground location is granted, per its own permission flow — alongside `FOREGROUND_SERVICE_LOCATION`. The Technician app declares neither. This spec asks for nothing background and needs nothing background, but continuous location is technically already available on the CSP app, which is a fact Legal will want in front of them.
-- **The two apps are asymmetric today.** The CSP app blocks all use until every permission including location is granted. The Technician app has no such requirement at all. R4b closes that gap; until it ships, Technician-app coverage will be materially worse than CSP-app coverage.
-
-**Open question not yet answerable, raised rather than assumed:** a partner who permanently denies location is locked out of the app, and no support or ops override exists. That is existing CSP-app behaviour rather than something this spec introduces, but R4b extends it to the Technician app — so if an escape hatch is needed, this is when to decide.
+**Open question:** a partner who permanently denies location cannot use the app, and no support or ops override exists. R4b extends that condition to the Technician app, so an escape hatch — if one is wanted — needs deciding now.
 
 ---
 
