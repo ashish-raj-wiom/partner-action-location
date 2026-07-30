@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v0.8 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v0.9 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -25,7 +25,7 @@
 | G2 | **No silent gap** | Every partner action carries a location status, so a missing coordinate is always explained rather than merely absent. | R3a · AC-CAP-4 · AC-GRD-2 · MQ-3 |
 | G3 | **Capture costs the partner nothing** | No action is ever blocked, delayed or degraded in order to obtain a reading. | R4a · R4b · AC-GRD-3 · MQ-4 |
 | G4 | **No consequence without corroboration** | Location is never the sole basis for a payout, posture, access or disciplinary consequence against an individual; it may direct an investigation that stands on other evidence. | R5b · AC-GRD-4 · MQ-5 |
-| G5 | **One identified person per record** ⚠️ *AI GENERATED — review* | Every recorded action is attributable to exactly one partner user, named by an identifier that is never shared between people and never reused. | R6a · R6d · AC-GRD-6 · MQ-8 |
+| G5 | **One identified person per record** | Every recorded action is attributable to exactly one partner user, named by an identifier that is never shared between people and never reused. | R6a · R6d · AC-GRD-6 · MQ-8 |
 
 ### Success metrics
 
@@ -254,9 +254,8 @@ What the platform must be able to do for this feature to exist. Whether these ar
 
 | # | Location | What was generated | Basis |
 |---|---|---|---|
-| 1 | §1 G5 · invariant | **The identity guardrail and its zero-tolerance invariant.** Your requirement — "I should know who the user is very concretely" — is written as R6 and G5; the guardrail wording, and the decision to make it an invariant rather than a metric, are mine. | Attribution either holds absolutely or the data is unusable for naming an individual, which is what G4 rests on. A guardrail with zero tolerance says that; a trending metric would not. |
-| 2 | §3b T8 | No reading retained by the app between sessions. | Data-minimisation default; not discussed. |
-| 3 | §6 MQ-9 | Mock-location reporting. | Follows from R2b; you approved capturing the flag but not what it feeds. |
+| 1 | §3b T8 | No reading retained by the app between sessions. | Data-minimisation default; not discussed. |
+| 2 | §6 MQ-9 | Mock-location reporting. | Follows from R2b; you approved capturing the flag but not what it feeds. |
 
 **Open question for engineering:** how long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 and MQ-5 for as long as the data is held (R5a); the retention period itself is engineering's to propose.
 
