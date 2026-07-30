@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Partner Action Location — Product Requirements v1.1</title>
+<title>Partner Action Location — Product Requirements v1.2</title>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   :root {
@@ -161,13 +161,13 @@
 <main>
 
 <header class="doc">
-  <div class="eyebrow">Wiom · Product Requirements Document · v1.1 · DRAFT · PM deliverable</div>
+  <div class="eyebrow">Wiom · Product Requirements Document · v1.2 · IN REVIEW · PM deliverable</div>
   <h1>Partner Action Location — where CSP users work from</h1>
   <p class="lede">Every action a signed-in partner user takes — in the CSP App and the Technician App, across every service, screen opens and taps included — records who did it and where they were: the person named beyond doubt, the coordinate, how accurate it is, and whether it was fabricated rather than measured. The purpose is a question Wiom cannot answer today: where do OWNERs, TECHNICIANs, MANAGERs and MANAGER+ actually do their jobs from?</p>
   <div class="meta-row">
     <span><strong>Owner:</strong> Ashish Raj (PM)</span>
     <span><strong>Reviewer:</strong> TBD (Engineering Lead)</span>
-    <span><strong>Status:</strong> Draft · 0 unconfirmed requirements · 4 open questions · Legal review not yet started</span>
+    <span><strong>Status:</strong> In review · content complete, every requirement ruled on · 3 open questions · Legal review not yet started</span>
   </div>
   <div class="convention">
     <strong>Current state, verified against <code>main</code></strong> (CSP <code>4979bd2</code>, Technician <code>da3d455</code>): <strong>no device location is captured against any action today</strong> — neither app obtains a location reading at all. <strong>Location permission, however, is already compulsory in both apps</strong> and both re-ask if it is withdrawn: the CSP app blocks all use until every permission including location is granted (<code>PermissionFlow</code> over <code>AppContent</code>, string <em>"To use CSP App allow all the permissions"</em>), and the Technician app gates on the login screen (<code>feature/auth/PermissionFlowHost</code>, with <code>PermissionType.LOCATION</code> in its set). Permission acquisition is therefore not specified here — only the assumption that it stays that way (§1). The CSP app additionally declares <code>ACCESS_BACKGROUND_LOCATION</code> and <code>FOREGROUND_SERVICE_LOCATION</code>, which Legal should have in front of them.<br><br>
@@ -308,10 +308,10 @@ flowchart TD
 </section>
 
 <section class="spec" id="review" style="margin-top:56px;">
-  <h2><span class="num">?</span> Open questions <span class="tier how">DRAFT</span></h2>
+  <h2><span class="num">?</span> Open questions <span class="tier how">OPEN</span></h2>
   <div class="expected"><strong>What this is:</strong> the questions that must be answered before this document can be signed off, and who owns each. Every requirement in the body above has been ruled on.</div>
 <p>Recorded as <strong>OV-7</strong>. Each must be closed before sign-off.</p>
-<table><tr><th>#</th><th>Question</th><th>Owner</th></tr><tr><td>1</td><td>How long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 and MQ-5 for as long as the data is held (R5a); the retention period itself is Engineering's to propose.</td><td>Engineering</td></tr><tr><td>2</td><td>What range should C-01 carry? The 20 m default is set; the tolerable range depends on what field devices achieve without adding latency (OV-5).</td><td>Engineering</td></tr><tr><td>3</td><td>R6 requires an identifier, a CSP and a role on every record — enough to name the person without ambiguity. It does not require a name or a mobile number. Adding either would make the data readable at a glance but would place direct personal identifiers in every location record, widening what Legal must approve. Is the identifier alone sufficient for the analysis?</td><td>PM</td></tr><tr><td>4</td><td>Reviewer, and the Legal/DPDP, Android and Analytics consulted names.</td><td>PM</td></tr></table>
+<table><tr><th>#</th><th>Question</th><th>Owner</th></tr><tr><td>1</td><td>How long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 and MQ-5 for as long as the data is held (R5a); the retention period itself is Engineering's to propose.</td><td>Engineering</td></tr><tr><td>2</td><td>What range should C-01 carry? The 20 m default is set; the tolerable range depends on what field devices achieve without adding latency (OV-5).</td><td>Engineering</td></tr><tr><td>3</td><td>Reviewer, and the Legal/DPDP, Android and Analytics consulted names.</td><td>PM</td></tr></table>
   <hr class="sect-end">
 </section>
 
@@ -328,7 +328,7 @@ flowchart TD
 </div>
 
 <p style="margin-top:30px;font-size:12px;color:var(--muted);text-align:center;">
-  Wiom PRD Template v3 · Partner Action Location v1.1 · Authored by Ashish Raj
+  Wiom PRD Template v3 · Partner Action Location v1.2 · Authored by Ashish Raj
 </p>
 
 </main>

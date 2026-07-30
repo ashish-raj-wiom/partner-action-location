@@ -2,8 +2,8 @@
 
 | | | | |
 |---|---|---|---|
-| **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v1.1 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — In review | **Sign-off** — Pending |
+| **Version** — v1.2 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -261,8 +261,7 @@ Recorded as **OV-7**. Each must be closed before sign-off.
 |---|---|---|
 | 1 | How long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 and MQ-5 for as long as the data is held (R5a); the retention period itself is Engineering's to propose. | Engineering |
 | 2 | What range should C-01 carry? The 20 m default is set; the tolerable range depends on what field devices achieve without adding latency (OV-5). | Engineering |
-| 3 | R6 requires an identifier, a CSP and a role on every record — enough to name the person without ambiguity. It does not require a name or a mobile number. Adding either would make the data readable at a glance but would place direct personal identifiers in every location record, widening what Legal must approve. Is the identifier alone sufficient for the analysis? | PM |
-| 4 | Reviewer, and the Legal/DPDP, Android and Analytics consulted names. | PM |
+| 3 | Reviewer, and the Legal/DPDP, Android and Analytics consulted names. | PM |
 
 ---
 
