@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v0.9 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v1.0 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -13,7 +13,7 @@
 
 > **No customer outcome.** This is an internal capability; no customer experience changes. Recorded as **OV-1**.
 
-**Boundary.** This spec governs **who performed each action and where they were when they performed it**, in both apps, across every module, service and role (C-02). It changes no service's behaviour, no state machine and no task outcome. The **customer app is entirely out of scope** (AC-REG-1). Obtaining a reading must never make an action slower or less reliable (R4, G3). The existing use of location for WiFi scanning during router configuration must continue to work unchanged (AC-REG-2). This spec captures where each action happened; it defines no comparison against any reference point.
+**Boundary.** This spec governs **who performed each action and where they were when they performed it**, in both apps, across every module, service and role (C-02). It changes no service's behaviour, no state machine and no task outcome. **Every flow must behave exactly as it does today** — each task family (INSTALL, RESTORE, RECHARGE, NETBOX_PICKUP, OUTAGE, SHIFTING) and each flow that carries no task, such as sign-in, the feed, the drilldowns, wallet and profile (AC-REG-4, AC-REG-5, AC-REG-6, AC-REG-7). The **customer app is entirely out of scope** (AC-REG-1). Obtaining a reading must never make an action slower or less reliable (R4, G3). The existing use of location for WiFi scanning during router configuration must continue to work unchanged (AC-REG-2). This spec captures where each action happened; it defines no comparison against any reference point.
 
 **Assumption this spec rests on.** Both apps already require location permission before they can be used, and both re-ask if it is withdrawn. Permission acquisition is therefore not specified here, and coverage depends on that remaining true — if either app ever makes location optional, M1 and M2 fall with it.
 
@@ -132,7 +132,7 @@ Lifecycle of the **location context of an app session** (created when a partner 
 | MQ-6 | The number of partner users with location data on at least one action. | M1 |
 | MQ-7 | For each partner user, and overall: the share of their actions that carry location data. | M2 |
 | MQ-8 | For every recorded action: the identifier, CSP and role of the partner user who performed it — and whether any action is missing any of the three, or carries an identifier that maps to more than one person. | G5 invariant · R6a · R6b · R6c |
-| MQ-9 | The count and identity of partner users producing mock-location readings. ⚠️ *AI GENERATED — review* | G1 · R2b |
+| MQ-9 | The count and identity of partner users producing mock-location readings. | G1 · R2b |
 
 ---
 
@@ -144,7 +144,7 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-CAP-1 | **Given** Sunil signed in and the device able to report 28.4390, 77.0511 with a 12 m accuracy radius, **When** he proposes a slot on BKG-2026-07-118342, **Then** the action's record carries that latitude and longitude, accuracy 12 m, mock flag false, and status *location recorded*. | R1a · R2a · R2b · R3a · T6 · G1 | Settled |
+| AC-CAP-1 | **Given** Sunil signed in and the device able to report 28.4390, 77.0511 with a 12 m accuracy radius, **When** he marks himself arrived at site for BKG-2026-07-118342, **Then** the action's record carries that latitude and longitude, accuracy 12 m, mock flag false, and status *location recorded*. | R1a · R2a · R2b · R3a · T6 · G1 | Settled |
 | AC-CAP-2 | **Given** C-01 at 20 m but the best the device can report is a 500 m accuracy radius, **When** Sunil acts, **Then** the record carries that coordinate with accuracy 500 m — the coordinate is still recorded, the accuracy is reported as 500 m and not as 20 m, and the action is not delayed to obtain a better one. | R2a · C-01 · T6 · P1 | Settled |
 | AC-CAP-3 | **Given** Ramesh signed in with the device's location setting switched off, **When** he opens a task drilldown, **Then** that **screen open** is recorded with status *device location switched off* and no coordinate. | R1b · R3a · T3 · T6 · G2 | Settled |
 | AC-CAP-4 | **Given** Sunil in a session where no reading is available, **When** he taps a CTA, **Then** the record carries status *no reading available* — the status is present and non-empty. | R3a · T6 · G2 | Settled |
@@ -171,16 +171,16 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-WF-1 | **Given** Sunil with the device location setting on, **When** he completes the on-site sequence for BKG-2026-07-118342 from arrival through to the customer rating, **Then** every step in that sequence has a record carrying his identifier, CSP and role, a coordinate, its accuracy radius, its mock flag and a status — with no gaps in the sequence. | R1a · R1b · R2 · R6a · R6b · R6c · T6 · G1 · G5 | Settled |
-| AC-WF-2 | **Given** Ramesh with the device location setting off all day, **When** he works a full day — opens the feed, proposes a slot on BKG-2026-07-118342, assigns Sunil, and reports one install failed — **Then** every action completes at normal speed, every record carries status *device location switched off*, and no error, warning or prompt appeared during any action. | R4a · R4b · R4-b MUST NOT · T3 · T6 · G2 · G3 | Settled |
+| AC-WF-2 | **Given** Ramesh with the device location setting off all day, **When** he works a full day — opens the feed, assigns Sunil to BKG-2026-07-118342, opens a netbox-recovery task, and reports one install failed — **Then** every action completes at normal speed, every record carries status *device location switched off*, and no error, warning or prompt appeared during any action. | R4a · R4b · R4-b MUST NOT · T3 · T6 · G2 · G3 | Settled |
 
 ### FAIL — Capture never depends on a reading (T6)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-FAIL-1 | **Given** a location request in flight with no reading yet available, **When** Sunil taps a CTA, **Then** the record is written immediately with status *no reading available*, the action completes with no added latency, and nothing waits for the reading. | R4a · P1 · G3 · MQ-4 | Settled |
-| AC-FAIL-2 | **Given** location capture failing outright on Ramesh's device — every request erroring — **When** he proposes a slot, **Then** the slot proposal completes normally and no error, prompt or block is shown. | R4-a MUST NOT · R4-b MUST NOT · G3 | Settled |
+| AC-FAIL-2 | **Given** location capture failing outright on Ramesh's device — every request erroring — **When** he assigns a technician to BKG-2026-07-118342, **Then** the assignment completes normally and no error, prompt or block is shown. | R4-a MUST NOT · R4-b MUST NOT · G3 | Settled |
 
-### REG — Regression against the §1 Boundary
+### REG — Regression: every flow behaves exactly as before (§1 Boundary)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
@@ -188,6 +188,9 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 | AC-REG-2 | **Given** this feature live, **When** Sunil runs router configuration for BKG-2026-07-118342, **Then** WiFi scanning returns networks and the router-config flow completes exactly as it did before this feature. | §1 Boundary | Settled |
 | AC-REG-3 | **Given** this feature live, **When** both apps are exercised end to end on a fresh install, **Then** every screen — the permission flow and the device-location-off prompt included — is identical to the pre-change build. | §4 · §1 Assumption | Settled |
 | AC-REG-4 | **Given** this feature live, **When** the full booking-to-install journey for BKG-2026-07-118342 is run, **Then** every state transition, timer and notification behaves exactly as in the pre-change build. | §1 Boundary · G3 | Settled |
+| AC-REG-5 | **Given** this feature live, **When** a task of each other family is run end to end — RESTORE, RECHARGE, NETBOX_PICKUP, OUTAGE and SHIFTING — **Then** each completes with the same states, timers, notifications and outcomes as in the pre-change build. | §1 Boundary · G3 | Settled |
+| AC-REG-6 | **Given** this feature live, **When** the flows that carry no task are exercised — sign-in, the feed, every task drilldown, wallet and withdrawal, and profile — **Then** each behaves exactly as in the pre-change build. | §1 Boundary · G3 | Settled |
+| AC-REG-7 | **Given** this feature live, **When** any action in any flow fails for its own reasons — a rejected submission, a network error, a validation failure — **Then** it fails the same way and with the same message as in the pre-change build, with no location-related wording anywhere in the failure. | §1 Boundary · R4-b MUST NOT · G3 | Settled |
 
 ### RACE — Precedence rule (P1)
 
@@ -255,7 +258,6 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | # | Location | What was generated | Basis |
 |---|---|---|---|
 | 1 | §3b T8 | No reading retained by the app between sessions. | Data-minimisation default; not discussed. |
-| 2 | §6 MQ-9 | Mock-location reporting. | Follows from R2b; you approved capturing the flag but not what it feeds. |
 
 **Open question for engineering:** how long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 and MQ-5 for as long as the data is held (R5a); the retention period itself is engineering's to propose.
 

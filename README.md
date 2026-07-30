@@ -7,4 +7,4 @@ Location on every analytics event from the CSP App and the Technician App.
 - `index.html` — rendered spec (Wiom PRD Template v3)
 - `Partner_Action_Location_PRD.md` — source of truth
 
-Status: **v0.9 draft.** 2 items open for PM review; Legal review not yet started.
+Status: **v1.0 draft.** 1 item open for PM review; Legal review not yet started.
