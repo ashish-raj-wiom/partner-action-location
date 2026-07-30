@@ -1,6 +1,6 @@
 # Partner Action Location — PRD
 
-Location on every analytics event from the CSP App and the Technician App.
+Who performed each action in the CSP App and the Technician App, and where they were when they did it.
 
 **Read it here:** https://ashish-raj-wiom.github.io/partner-action-location/
 
