@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v0.3 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v0.4 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -13,7 +13,7 @@
 
 > **No customer outcome.** This is an internal capability; no customer experience changes. Recorded as **OV-1**.
 
-**Boundary.** This spec governs **what must be recorded about where a partner user was when they acted**, in both apps, across every module, service and role (C-03). It changes no service's behaviour, no state machine and no task outcome. The **customer app is entirely out of scope** (AC-REG-1). Obtaining a location must never make an action slower or less reliable (R5, G3). Location permission is already a precondition for using the CSP app and this spec leaves that flow unchanged (R4a, AC-REG-2); the only change it asks for is the same precondition on the Technician app (R4b). The existing use of location for WiFi scanning during router configuration must continue to work unchanged (AC-REG-3).
+**Boundary.** This spec governs **what must be recorded about where a partner user was when they acted**, in both apps, across every module, service and role (C-03). It changes no service's behaviour, no state machine and no task outcome. The **customer app is entirely out of scope** (AC-REG-1). Obtaining a location reading must never make an action slower or less reliable (R5, G3). Location permission is already a precondition for using the CSP app and this spec leaves that flow unchanged (R4a, AC-REG-2); the only change it asks for is the same precondition on the Technician app (R4b). The existing use of location for WiFi scanning during router configuration must continue to work unchanged (AC-REG-3).
 
 ### Guardrails — promises that hold on every path
 
@@ -21,18 +21,18 @@
 |---|---|---|---|
 | G1 | **Self-describing readings** ⚠️ *AI GENERATED — review* | No coordinate is ever recorded without its reliability trio — accuracy, age, mock flag. | R2a · R2b · R2c · AC-CAP-1 · AC-GRD-1 · MQ-2 |
 | G2 | **No silent gap** ⚠️ *AI GENERATED — review* | Every partner action carries a location status, so a missing coordinate is always explained rather than merely absent. | R3a · AC-CAP-4 · AC-GRD-2 · MQ-3 |
-| G3 | **Capture costs the partner nothing** ⚠️ *AI GENERATED — review* | No action is ever blocked, delayed or degraded in order to obtain a location. | R5a · R5b · AC-GRD-3 · MQ-4 |
+| G3 | **Capture costs the partner nothing** ⚠️ *AI GENERATED — review* | Once a session is under way, no action is ever blocked, delayed or degraded in order to obtain a location **reading**. Whether a session may start at all is governed by R4. | R5a · R5b · AC-GRD-3 · MQ-4 |
 | G4 | **No consequence without corroboration** ⚠️ *AI GENERATED — review* | Location is never the sole basis for a payout, posture, access or disciplinary consequence against an individual; it may direct an investigation that stands on other evidence. | R6b · AC-GRD-4 · MQ-5 |
 
 ### Success metrics
 
 | ID | Metric | Baseline | Target | Source |
 |---|---|---|---|---|
-| M1 | Partner actions carrying a high-confidence reading (accuracy within C-02, age within C-01) | n/a — new capability | ≥ 80% ⚠️ *AI GENERATED — review* | MQ-2 |
+| M1 | Partner actions carrying a high-confidence reading (§8) | n/a — new capability | ≥ 80% ⚠️ *AI GENERATED — review* | MQ-2 |
 | M2 | Partner users who are **analysable** — at least C-04 of their actions in a rolling 7 days are high-confidence | n/a — new capability | ≥ 90% ⚠️ *AI GENERATED — review* | MQ-6 |
 | M3 | Signed-in partner users whose records carry a populated role | n/a — never measured ⚠️ *AI GENERATED — review* | 100% | MQ-7 |
 
-**Invariant (not a metric):** G3 — partner actions blocked, delayed or degraded in order to obtain a location = 0, zero tolerance. Monitored via MQ-4, not trended.
+**Invariant (not a metric):** G3 — actions within a live session blocked, delayed or degraded in order to obtain a location reading = 0, zero tolerance. Monitored via MQ-4, not trended.
 
 ---
 
@@ -42,7 +42,7 @@
 |---|---|---|---|
 | R1 | As the PM for partner operations, I want every action a partner user takes in either app to record where it happened, so I can see where each role actually does its job from — and trace a booking that was created at the partner's own shop rather than at the customer's address. | **(a)** Record latitude and longitude against every action a signed-in partner user takes, in both apps, across every module and service. **(b)** Cover every kind of interaction the apps already report, screen opens and taps included — not only actions that change a task's state. | **(a)** Record location against customer-app activity. **(b)** Record location against a user who is not signed in as a partner user. |
 | R2 | As an analyst acting on a named individual's data, I need each coordinate to declare how much it can be trusted, so I never place a person somewhere on the strength of a city-level or hours-old reading. | **(a)** Record the accuracy radius in metres alongside every coordinate. **(b)** Record the age of the reading in seconds, measured from the instant the location was obtained to the instant the action happened — **not** to the instant the record is stored, so a record held on the device and sent later still states its true age. ⚠️ *AI GENERATED — review* **(c)** Record whether the reading came from a mock-location provider. | Record a latitude or longitude without its accuracy, its age and its mock flag (G1). |
-| R3 | As an analyst, I need to know why a coordinate is missing, so that absence is a finding rather than a hole. | **(a)** Record a location status against **every** partner action, including actions with no coordinate, drawn from: fresh reading · stale reading · device location switched off · permission not available. **(b)** Treat an approximate-only permission grant as available, and record the resulting coordinate with the large accuracy radius the device actually gives — never as a precise one. ⚠️ *AI GENERATED — review* | Record a partner action with the status absent or empty (G2). |
+| R3 | As an analyst, I need to know why a coordinate is missing, so that absence is a finding rather than a hole. | **(a)** Record a location status against **every** partner action, including actions with no coordinate, drawn from: fresh reading · stale reading · device location switched off · permission not available. **(b)** Treat an approximate-only permission grant as available, and record the resulting coordinate with the large accuracy radius the device actually gives — never as a precise one. ⚠️ *AI GENERATED — review* | **(a)** Record a partner action with the status absent or empty (G2). **(b)** Attach a coordinate to any action whose status is *permission not available* or *device location switched off* — including from a reading cached before permission was withdrawn. ⚠️ *AI GENERATED — review* |
 | R4 | As the PM, I want location to be a condition of using either app, so coverage does not depend on persuasion. | **(a)** Keep the CSP app's existing launch-time permission requirement as it is — location is already one of the permissions it demands before the app can be used. **(b)** Make location permission the same precondition for using the Technician app, which today has no such requirement. | **(a)** Leave either app usable by a partner user who has not granted location permission. **(b)** Interrupt or block a session already in progress because permission was revoked mid-session — handle it at the next launch (T6, P1). |
 | R5 | As a partner user, I want the app to be exactly as fast and reliable as before, because I am paid to finish jobs, not to wait for a map. | **(a)** Let every action complete at its normal speed whether or not a location is available, waiting no longer than C-06 for one. **(b)** Record the action with a status from R3a when no location is available, rather than retrying or holding it. | **(a)** Block, delay or degrade any action in order to obtain a location (G3). **(b)** Show a partner any error, warning or prompt because a location was unavailable at the moment they acted. |
 | R6 | As the PM, I need to analyse a named individual and a named booking, because "which partner did this" is the question the data exists to answer. | **(a)** Permit analysis down to an individual partner user, a named booking and a named action. **(b)** Require evidence other than location before any payout, posture, access or disciplinary consequence is applied to an individual. ⚠️ *AI GENERATED — review* | Apply a consequence to an individual on the strength of location data alone (G4). ⚠️ *AI GENERATED — review* |
@@ -77,7 +77,8 @@ flowchart TD
     S -- "Device location switched off" --> T1N["T4 — device location off"]
     S -- "Device location switched on" --> T2N["T5 — available"]
     S -- "Permission revoked" --> T3N["T6 — not available, session continues (P1)"]
-    S -- "Permission granted" --> T4N["T7 — available, nothing backfilled"]
+    S -- "Permission granted, device location on" --> T4N["T7 — available, nothing backfilled"]
+    S -- "Permission granted, device location off" --> T7N["T11 — device location off"]
     S -- "Signed-in user replaced" --> T5N["T9 — re-evaluate as a new session"]
     S -- "Session ends" --> T6N["T10 — ended"]
 ```
@@ -94,16 +95,17 @@ Lifecycle of the **location context of an app session** (created when a partner 
 
 | ID | From | Action / Trigger | Rule / Check | To | Side-effects |
 |---|---|---|---|---|---|
-| T1 | — | Partner user opens the app while signed in | — | Undetermined | Session location context created; the signed-in user's role established (R7a). |
+| T1 | — | Partner user opens the app while signed in | — | Undetermined | Session location context created; the signed-in user's role established (R7a). The permission state is evaluated before any action is recorded, so no action is ever recorded from Undetermined (T2, T3). |
 | T2 | Undetermined | Permission state evaluated | Permission granted | Available | Actions begin carrying coordinate plus trio per T8 (R1a, R2). |
 | T3 | Undetermined | Permission state evaluated | Permission not granted | Permission not available | Actions carry status only (R3a, G2). The app's own launch-time permission requirement governs whether the session may continue at all (R4) — that requirement is existing behaviour, not defined here. |
 | T4 | Available | Device location setting switched off | — | Device location off | Actions carry status *device location switched off* with no coordinate (R3a, G2). No action is blocked (G3). |
 | T5 | Device location off | Device location setting switched on | — | Available | Actions resume carrying coordinate plus trio (R2). Nothing is backfilled. |
-| T6 | Available · Device location off | Permission revoked mid-session | — | Permission not available | Actions carry status *permission not available*; the session continues to completion (R4-b MUST NOT, P1); the launch-time requirement reapplies at the next open. |
-| T7 | Permission not available | Permission granted | — | Available | Actions resume carrying coordinate plus trio; nothing is backfilled for actions already recorded (R2). |
+| T6 | Available · Device location off | Permission revoked mid-session | — | Permission not available | Any reading already held is discarded and no coordinate is recorded from this point, even if one was cached moments earlier (R3-b MUST NOT); actions carry status *permission not available*; the session continues to completion (R4-b MUST NOT, P1); the launch-time requirement reapplies at the next open. |
+| T7 | Permission not available | Permission granted | Device location switched on | Available | Actions resume carrying coordinate plus trio; nothing is backfilled for actions already recorded (R2). |
 | T8 | Available · Device location off · Permission not available | Partner user performs an action | Dispatched by the §3a action chart | *No change* | Record carries: coordinate when a reading is available; accuracy in metres, age in seconds and mock flag whenever a coordinate is present (R2a, R2b, R2c, G1); location status always (R3a, G2); the user's role (R7a). Age states the reading-to-action interval however late the record is sent (R2b). The action is never held beyond C-06 (P2, G3). |
 | T9 | Undetermined · Available · Device location off · Permission not available | The signed-in partner user is replaced without the app restarting | — | Undetermined | Context re-evaluated from T1; role re-established for the new user (R7b); no reading obtained under the previous user is carried into the new user's records ⚠️ *AI GENERATED — review*. |
 | T10 | Undetermined · Available · Device location off · Permission not available | App session ends | — | Ended | Session location context discarded; no reading is retained by the app between sessions ⚠️ *AI GENERATED — review*. |
+| T11 | Permission not available | Permission granted | Device location switched off | Device location off | Actions carry status *device location switched off* with no coordinate (R3a, G2); no reading is obtainable until the device setting is switched on (T5). |
 
 ---
 
@@ -141,6 +143,7 @@ Permission is granted, but the device's own location setting is off, so no readi
 | C-04 | Share of a user's rolling-7-day actions that must be high-confidence for that user to count as analysable (M2) | 60% ⚠️ *AI GENERATED — review* | Fixed in V1 | Product |
 | C-05 | Retention of location data (MQ-5, Legal gate) | TBD — Legal-gated ⚠️ *AI GENERATED — review* | TBD | Legal + Product |
 | C-06 | Maximum time an action may wait for a location before being recorded without one (R5a, P2) | 0 seconds — never wait ⚠️ *AI GENERATED — review* | 0–3 s ⚠️ *AI GENERATED — review* | Engineering |
+| C-07 | Maximum distance from a partner's registered premises within which an action counts as having happened *at* those premises (MQ-8) | 150 metres ⚠️ *AI GENERATED — review* | 50–500 m ⚠️ *AI GENERATED — review* | Product |
 
 **Interaction note (C-01 × C-06):** because C-06 defaults to zero, no action ever pauses for a fresh reading. An action therefore carries whatever reading already exists, and its status is *fresh* or *stale* purely on the C-01 comparison. Raising C-06 above zero shifts records from *stale* toward *fresh* at the cost of delaying the action — it does not change what either status means. ⚠️ *AI GENERATED — review*
 
@@ -155,13 +158,13 @@ Permission is granted, but the device's own location setting is off, so no readi
 | MQ-1 | For a named partner user over a named date range: where was each of their actions performed, broken down by role, by app and by service. | Objective · R1a · R6a · R7a |
 | MQ-2 | For each partner action: the accuracy radius, the age, and whether the reading was mock — and therefore whether it is high-confidence against C-01 and C-02. | G1 · M1 · C-01 · C-02 |
 | MQ-3 | For partner actions carrying no coordinate: the reason, by status value, split by app and role. | G2 · R3a |
-| MQ-4 | Whether any partner action was blocked, delayed or degraded in order to obtain a location — including any held past C-06. | G3 invariant · R5a · R5b · C-06 |
+| MQ-4 | Whether any action within a live session was blocked, delayed or degraded in order to obtain a location reading — including any held past C-06. | G3 invariant · R5a · R5b · C-06 |
 | MQ-5 | For any consequence applied to a partner user, what non-location evidence supported it. | G4 · R6b · C-05 |
 | MQ-6 | For each partner user: the share of their rolling-7-day actions that are high-confidence, and therefore whether they are analysable. | M2 · C-04 |
 | MQ-7 | The share of signed-in partner users whose records carry a populated role. | M3 · R7a · R7b |
-| MQ-8 | For a named booking: what share of its actions occurred within C-02 of the partner's own registered premises rather than the customer address. ⚠️ *AI GENERATED — review* | Objective · R1a · R6a |
+| MQ-8 | For a named booking, counting only high-confidence readings: what share of its actions occurred within C-07 of the partner's own registered premises rather than at the customer address. ⚠️ *AI GENERATED — review* | Objective · R1a · R6a · C-07 |
 | MQ-9 | The count and identity of partner users producing mock-location readings. ⚠️ *AI GENERATED — review* | G1 · R2c |
-| MQ-10 | The share of partner coordinates obtained under an approximate-only permission grant, so coarse readings are not mistaken for imprecise precise ones. ⚠️ *AI GENERATED — review* | R3b · C-02 · M1 |
+| MQ-10 | The share of partner coordinates obtained under an approximate-only permission grant, so a deliberately coarsened reading is never mistaken for a poor satellite one. ⚠️ *AI GENERATED — review* | R3b · C-02 · M1 |
 
 ---
 
@@ -183,7 +186,7 @@ All examples use a synthetic partner ⚠️ *AI GENERATED — review*: CSP **WIO
 | AC-CAP-8 | **Given** Sunil granted **approximate** location only, and the device returns 28.44, 77.05 with a 2,000 m radius, **When** he acts, **Then** the record carries that coordinate with accuracy 2,000 m and a status set on the C-01 age test alone — and it does not count toward M1 at C-02's 100 m default. | R3b · R2a · C-02 · M1 · MQ-10 | Settled |
 | AC-CAP-9 | **Given** Sunil acting at 14:00 with a reading obtained at 13:59:30, and the handset offline until 20:00, **When** the record is sent at 20:00, **Then** its age reads 30 s, not 6 hours 30 s. | R2b · T8 | Settled |
 
-### PERM — Permission as a precondition (T1–T3, T5, T7, T9, T10)
+### PERM — Permission as a precondition (T1–T3, T5, T7, T9, T10, T11)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
@@ -195,6 +198,9 @@ All examples use a synthetic partner ⚠️ *AI GENERATED — review*: CSP **WIO
 | AC-PERM-6 | **Given** Sunil signed in on a shared handset with a reading obtained at the customer address, **When** he signs out and Ramesh signs in on the same handset without the app restarting, **Then** Ramesh's records carry role OWNER and none of them carries the reading obtained while Sunil was signed in. | T9 · R7b · R1-b MUST NOT | Settled |
 | AC-PERM-7 | **Given** Ramesh has a live session with a reading available, **When** he closes the app and reopens it after 4 hours with the device location setting off, **Then** his first action of the new session carries status *device location switched off* and no coordinate — the previous session's reading is not reused. | T10 · T1 · R3a · G2 | Settled |
 | AC-PERM-8 | **Given** a MANAGER+ user, **When** they act in the CSP app and later in the Technician app, **Then** their records carry role MANAGER+ in both cases. | R7a · R7-MUST NOT · M3 | Settled |
+| AC-PERM-9 | **Given** Sunil opening an app on a handset where location permission has never been granted, **When** the permission state is evaluated at session start, **Then** the session is held at the app's launch-time permission requirement and no action is recorded before that requirement resolves. | T3 · T1 · R4-a MUST NOT | Settled |
+| AC-PERM-10 | **Given** Ramesh with permission granted but the device's location setting switched off, **When** he grants permission afresh from device settings without touching the location toggle, **Then** his actions carry status *device location switched off* and no coordinate — not *fresh reading*. | T11 · R3a · G2 | Settled |
+| AC-PERM-11 | **Given** Sunil with a reading obtained 5 seconds ago at the customer address, **When** Android revokes location permission and he then submits an install step, **Then** that step's record carries status *permission not available* and **no coordinate** — the cached reading is not attached. | R3-b MUST NOT · T6 · G2 | Settled |
 
 ### WF — Workflows (T1 → T2 → T8, and T1 → T4 → T8)
 
@@ -208,7 +214,7 @@ All examples use a synthetic partner ⚠️ *AI GENERATED — review*: CSP **WIO
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-FAIL-1 | **Given** C-06 at its 0-second default and a location request in flight with no reading yet available, **When** Sunil taps a CTA, **Then** the record is written immediately with status only, the action completes with no added latency, and nothing waits for the reading. | R5a · P2 · C-06 · G3 · MQ-4 | Settled |
-| AC-FAIL-2 | **Given** whatever records location failing entirely on Ramesh's device, **When** he proposes a slot, **Then** the slot proposal completes normally and no error, prompt or block is shown. | R5-a MUST NOT · R5-b MUST NOT · G3 | Settled |
+| AC-FAIL-2 | **Given** location capture failing outright on Ramesh's device — every request erroring — **When** he proposes a slot, **Then** the slot proposal completes normally and no error, prompt or block is shown. | R5-a MUST NOT · R5-b MUST NOT · G3 | Settled |
 
 ### REG — Regression against the §1 Boundary
 
@@ -247,15 +253,15 @@ All examples use a synthetic partner ⚠️ *AI GENERATED — review*: CSP **WIO
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-CFG-1 | **Given** C-01 at 60 s and an action recorded with a 90-second-old reading reported as *stale reading*, **When** C-01 is raised to 300 s, **Then** the next equivalent action reports *fresh reading* with no app release. | R3a · C-01 · T8 | Settled |
-| AC-CFG-2 | **Given** C-06 at 0 s, **When** it is raised to 3 s on a device whose readings typically arrive in 1 s, **Then** actions begin carrying *fresh reading* more often and no action is delayed by more than 3 s. | R5a · C-06 · P2 | Settled |
+| AC-CFG-2 | **Given** C-06 at 0 s and an action recorded with status only because no reading existed yet, **When** C-06 is raised to 3 s and the same action is repeated on a device whose readings arrive in 1 s, **Then** that action is recorded with a coordinate and status *fresh reading*, having waited no more than 3 s. | R5a · C-06 · P2 | Settled |
 
 ### GRD — Guardrails
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-GRD-1 | **Given** any sample of partner records carrying a coordinate, **When** the sample is inspected, **Then** every one also carries accuracy, age and mock flag — zero coordinates appear without all three. | G1 · R2a · R2b · R2c · MQ-2 | Settled |
-| AC-GRD-2 | **Given** any sample of partner records, **When** the sample is inspected, **Then** every one carries a non-empty location status from the R3a set. | G2 · R3a · R3-MUST NOT · MQ-3 | Settled |
-| AC-GRD-3 | **Given** a full week of production traffic, **When** MQ-4 is run, **Then** zero partner actions were blocked, delayed or degraded in order to obtain a location, and zero were held past C-06. | G3 invariant · R5-a MUST NOT · MQ-4 | Settled |
+| AC-GRD-2 | **Given** any sample of partner records, **When** the sample is inspected, **Then** every one carries a non-empty location status from the R3a set. | G2 · R3a · R3-a MUST NOT · MQ-3 | Settled |
+| AC-GRD-3 | **Given** a full week of production traffic, **When** MQ-4 is run, **Then** zero actions within a live session were blocked, delayed or degraded in order to obtain a location reading, and zero were held past C-06. | G3 invariant · R5-a MUST NOT · MQ-4 | Settled |
 | AC-GRD-4 | **Given** a partner user whose location data suggests bookings were created at their own shop, **When** any payout, posture, access or disciplinary consequence is applied, **Then** a record of non-location evidence supporting it exists. ⚠️ *AI GENERATED — review* | G4 · R6b · R6-MUST NOT · MQ-5 | Settled |
 | AC-GRD-5 | **Given** a week of captured records, **When** an analyst queries for Ramesh Kumar's actions between 25 and 31 Jul, **Then** the result lists each action with its coordinate, accuracy, age, mock flag, status, role, app and service. | R6a · MQ-1 · MQ-8 | Settled |
 
@@ -311,6 +317,8 @@ Ordered with the decisions that most change the document first.
 | 3 | §2 R2b · §8 Age · AC-CAP-9 · §9 | **Age must be measured to the action, not to when the record is sent.** | Not discussed. Records are held on the device when it is offline; without this rule a six-hour-old reading sent later reads as current, which would quietly corrupt every conclusion. |
 | 4 | §2 R3b · §8 Approximate-only grant · AC-CAP-8 · MQ-10 · §9 | **Handling of an approximate-only permission grant.** I assumed it counts as available, so the launch requirement is satisfied, but its coarse coordinate is recorded honestly and simply fails C-02. | Not discussed. Android lets a user grant approximate instead of precise; without this rule such users appear tracked while their data can never place them at a premises. The stricter alternative — requiring precise — is your call. |
 | 5 | §3b T9 · §2 R7b · AC-PERM-6 · §9 | **User-switch handling on a shared handset**, including that no reading crosses a user boundary. | Not discussed. Partner handsets are shared between an OWNER and technicians, so without this rule one person's location can be attributed to another — the worst failure for per-individual analysis. |
+| 5a | §2 R3-b MUST NOT · §3b T6 · AC-PERM-11 | **No coordinate is recorded once permission is withdrawn, even from a reading cached seconds earlier.** | Not discussed, and found by lint: without it, an action after revocation could carry a real coordinate while its own status read *permission not available*. That is recording location after consent is withdrawn, and mislabelling it — the version Legal would object to most. |
+| 5b | §5 C-07 · §6 MQ-8 | **A separate proximity threshold (150 m) for "at the partner's premises".** | Found by lint: MQ-8 was using C-02, an accuracy-radius ceiling, as though it were a distance between two points. They are unrelated measures. C-07 is new and its default is a guess — a shop frontage is metres wide, but a reading placing someone 100 m away may still be the same building. |
 | 6 | §5 C-01 (60 s, 30–300 s) | Fresh/stale boundary. | Common practice for treating a cached reading as current. |
 | 7 | §5 C-02 (100 m, 50–500 m) | High-confidence accuracy ceiling. | Chosen so a partner's premises can be told apart from a customer address a few hundred metres away — the office-detection use case. |
 | 8 | §5 C-04 (60%) · §1 M2 · AC-BV-4 | The "analysable user" definition and its threshold. | Invented so coverage is measurable per user, not only in aggregate. |
