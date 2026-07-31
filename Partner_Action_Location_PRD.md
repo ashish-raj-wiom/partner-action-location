@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — In review | **Sign-off** — Pending |
-| **Version** — v1.8 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v1.9 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -21,7 +21,7 @@
 
 | ID | Guardrail | One line | Anchors |
 |---|---|---|---|
-| G1 | **Self-describing readings** | No coordinate is ever recorded without its accuracy radius and its mock flag. | R2a · R2b · AC-CAP-1 · AC-GRD-1 · MQ-2 |
+| G1 | **Self-describing readings** | No coordinate is ever recorded without its accuracy radius and its mock flag. | R2a · R2b · AC-CAP-1 · AC-GRD-1 · MQ-2 · MQ-8 |
 | G2 | **No silent gap** | Every partner action carries a location status, so a missing coordinate is always explained rather than merely absent. | R3a · AC-CAP-4 · AC-GRD-2 · MQ-3 |
 | G3 | **Capture costs the partner nothing** | No action is ever blocked, delayed or degraded in order to obtain a reading. | R4a · R4b · AC-GRD-3 · MQ-4 |
 | G4 | **One identified person per record** | Every recorded action is attributable to exactly one partner user, named by an identifier that is never shared between people and never reused. | R6a · R6d · AC-GRD-4 · MQ-7 |
