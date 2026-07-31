@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — In review | **Sign-off** — Pending |
-| **Version** — v1.5 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v1.6 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -44,7 +44,7 @@
 
 | ID | Story | MUST | MUST NOT |
 |---|---|---|---|
-| R1 | As the PM for partner operations, I want every action a partner user takes in either app to record where it happened, so I can see where each role actually does its job from. | **(a)** Record latitude and longitude against every action a signed-in partner user takes, in both apps, across every module and service. **(b)** Cover every kind of interaction the apps already report, screen opens and taps included — not only actions that change a task's state. | **(a)** Record location against customer-app activity. **(b)** Record location against a user who is not signed in as a partner user. |
+| R1 | As the PM for partner operations, I want every action a partner user takes in either app to record where it happened — today's actions and every action added later — so I can see where each role actually does its job from without having to ask for each new one to be wired up. | **(a)** Record latitude and longitude against every action a signed-in partner user takes, in both apps, across every module and service. **(b)** Cover every kind of interaction the apps already report as a CleverTap event, screen opens and taps included — not only actions that change a task's state. **(c)** Cover every action defined in future from its first release, so a newly added event carries the same location and identity data as the actions that exist today. How and where the capture happens is the implementer's design (§9). | **(a)** Record location against customer-app activity. **(b)** Record location against a user who is not signed in as a partner user. **(c)** Ship a new partner-user action without the data this spec requires. |
 | R2 | As an analyst acting on a named individual's data, I need the most accurate reading the device can give, and I need to know when a coordinate was fabricated rather than measured. | **(a)** Record the most accurate location the device can provide without delaying the action, aiming for C-01, together with its accuracy radius in metres. **(b)** Record whether the reading came from a mock-location provider. **(c)** Fetch the location when the action happens and record it as part of that action, never by a later pass over actions already recorded. | Record a latitude or longitude without its accuracy radius and its mock flag (G1). |
 | R3 | As an analyst, I need to know why a coordinate is missing, so that absence is a finding rather than a hole. | **(a)** Record a location status against **every** partner action, drawn from: location recorded · no reading available · device location switched off. | Record a partner action with the status absent or empty (G2). |
 | R4 | As a partner user, I want the app to be exactly as fast and reliable as before, because I am paid to finish jobs, not to wait for a map. | **(a)** Let every action complete at its normal speed whether or not a reading is available, never holding it to wait for one. **(b)** Record the action with a status from R3a when no reading is available, rather than retrying or holding it. | **(a)** Block, delay or degrade any action in order to obtain a reading (G3). **(b)** Show a partner any error, warning or prompt because a reading was unavailable at the moment they acted. |
@@ -135,6 +135,7 @@ Lifecycle of the **location context of an app session** (created when a partner 
 | MQ-9 | The count and identity of partner users producing mock-location readings. | G1 · R2b |
 | MQ-10 | Across all partner users over any date range: how their actions distribute by location, grouped by role, app, service, task family and action type. | Objective · R5c · R5d |
 | MQ-11 | For a named task or booking: every action performed on it, by whom, of what kind, and where. | R5a · R5d |
+| MQ-12 | Which action types carry no location data at all — including action types first seen after launch, so a newly added one that missed the capture shows up rather than passing unnoticed. | R1b · R1c · R1-c MUST NOT |
 
 ---
 
@@ -156,6 +157,7 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 | AC-CAP-8 | **Given** Sunil acting at 14:00:00, **When** his action is recorded, **Then** the location was fetched at 14:00:00 as part of that action — no later pass adds or changes the coordinate on it. | R2c · T6 | Settled |
 | AC-CAP-9 | **Given** Sunil signed in, **When** he performs actions of four different kinds in one session — opens the feed, opens a netbox-recovery drilldown, submits an install step, and opens his wallet — **Then** every one of those four records carries his identifier `tech_31907`, his CSP **WIOM-GGN-0472** and his role **TECHNICIAN**, with no lookup needed to know who acted. | R6a · R6b · R6c · T6 · G5 | Settled |
 | AC-CAP-10 | **Given** a week in which Ramesh and Sunil work tasks of all six families — INSTALL, RESTORE, RECHARGE, NETBOX_PICKUP, OUTAGE and SHIFTING — and also sign in, browse the feed, open drilldowns, use the wallet and open their profiles, **When** the records for that week are inspected, **Then** every action of every kind carries a location status and an identifier, and a coordinate wherever one was available — no task family and no flow is absent. | R1a · R1b · R3a · R6a · T6 · G2 · G5 | Settled |
+| AC-CAP-11 | **Given** a new partner-user action added to either app after this feature ships — a new reschedule tap in the shifting flow, say — **When** it is released and Sunil uses it, **Then** its records carry the same location status, identifier, CSP, role and coordinate as any action that existed before it, with no change required to that new action's own code. | R1c · R1-c MUST NOT · T6 · G2 · G5 · MQ-12 | Settled |
 
 ### SESS — Session, identity and device-location state (T1–T5, T7, T8)
 
@@ -237,7 +239,7 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 | Term | Meaning | Owner (domain) |
 |---|---|---|
 | Partner user | **Canonical definition:** a person signed in to the CSP app or the Technician app in one of the C-02 roles. Excludes customers and unauthenticated users. All other mentions cite this definition. | Partner operations |
-| Action | **Canonical definition:** any interaction a partner user has with either app that the app already reports — a screen open, a tap, a submission. Not limited to interactions that change a task's state (R1b). Both apps already report every one of these to CleverTap today, each carrying its own event properties and a timestamp, so the set of actions this spec covers is the set already being reported. | Product |
+| Action | **Canonical definition:** any interaction a partner user has with either app that the app already reports — a screen open, a tap, a submission. Not limited to interactions that change a task's state (R1b). Every one of these is already defined and logged today as a CleverTap event, each carrying its own event properties and a timestamp — so the actions this spec covers are the events already defined. The set is not closed: any action defined in future joins it from the moment it ships (R1c). | Product |
 | Identifier | **Canonical definition:** the value that names one partner user and only ever that person. It must be unique across all partner users, stable for the life of that person's relationship with Wiom, and never reissued to somebody else — otherwise two people's movements merge into one history (R6a, G5). | Partner operations |
 | Reading | A single location obtained from the device, carrying a latitude, a longitude and an accuracy radius. | — |
 | Accuracy radius | The device's own estimate, in metres, of how far the true position may be from the reported coordinate. A satellite reading is typically tens of metres; one derived from WiFi or cell towers can be hundreds of metres or more. A large radius is not an error — it is an honest statement of imprecision, which is why R2a requires it alongside every coordinate. | — |
@@ -257,7 +259,8 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | Name the signed-in partner user with an identifier that is unique, stable and never reused, and carry it — with the user's CSP and role — on every recorded action. | R6a · R6b · R6c · G5 · MQ-8 |
 | Re-establish who is signed in, and their CSP and role, when the signed-in user changes without the app restarting — and attribute an action already in flight to whoever performed it. | R6d · T7 · AC-RACE-3 |
 | Read the device's location setting at session start and when it changes mid-session. | T2 · T3 · T4 · T5 |
-| Record location against **every** partner action from one place, so no kind of interaction can be missed and no individual callsite needs to know about location. | R1a · R1b · R3a · G1 · G2 |
+| Record location against **every** partner action from one place, so no kind of interaction can be missed, no individual callsite needs to know about location, and any action defined in future inherits the capture without being wired up for it. | R1a · R1b · R1c · R3a · G1 · G2 · AC-CAP-11 |
+| Report which action types carry no location data, so one that missed the capture is visible rather than silently absent. | R1c · MQ-12 |
 | Change the target accuracy without an app release. | C-01 |
 | Distinguish "no reading available" from "device location switched off" as separate observable states. | R3a · G2 · MQ-3 |
 | Discard a reading when the session ends or the signed-in user changes, so no cross-user reading is ever attached. | T7 · T8 |
