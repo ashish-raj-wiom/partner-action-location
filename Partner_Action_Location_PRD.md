@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — In review | **Sign-off** — Pending |
-| **Version** — v1.2 · 30 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v1.3 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -25,7 +25,7 @@
 | G2 | **No silent gap** | Every partner action carries a location status, so a missing coordinate is always explained rather than merely absent. | R3a · AC-CAP-4 · AC-GRD-2 · MQ-3 |
 | G3 | **Capture costs the partner nothing** | No action is ever blocked, delayed or degraded in order to obtain a reading. | R4a · R4b · AC-GRD-3 · MQ-4 |
 | G4 | **No consequence without corroboration** | Location is never the sole basis for a payout, posture, access or disciplinary consequence against an individual; it may direct an investigation that stands on other evidence. | R5b · AC-GRD-4 · MQ-5 |
-| G5 | **One identified person per record** | Every recorded action is attributable to exactly one partner user, named by an identifier that is never shared between people and never reused. | R6a · R6d · AC-GRD-6 · MQ-8 |
+| G5 | **One identified person per record** | Every recorded action is attributable to exactly one partner user, named by an identifier that is never shared between people and never reused. | R6a · R6d · AC-GRD-5 · MQ-8 |
 
 ### Success metrics
 
@@ -48,7 +48,7 @@
 | R2 | As an analyst acting on a named individual's data, I need the most accurate reading the device can give, and I need to know when a coordinate was fabricated rather than measured. | **(a)** Record the most accurate location the device can provide without delaying the action, aiming for C-01, together with its accuracy radius in metres. **(b)** Record whether the reading came from a mock-location provider. **(c)** Fetch the location when the action happens and record it as part of that action, never by a later pass over actions already recorded. | Record a latitude or longitude without its accuracy radius and its mock flag (G1). |
 | R3 | As an analyst, I need to know why a coordinate is missing, so that absence is a finding rather than a hole. | **(a)** Record a location status against **every** partner action, drawn from: location recorded · no reading available · device location switched off. | Record a partner action with the status absent or empty (G2). |
 | R4 | As a partner user, I want the app to be exactly as fast and reliable as before, because I am paid to finish jobs, not to wait for a map. | **(a)** Let every action complete at its normal speed whether or not a reading is available, never holding it to wait for one. **(b)** Record the action with a status from R3a when no reading is available, rather than retrying or holding it. | **(a)** Block, delay or degrade any action in order to obtain a reading (G3). **(b)** Show a partner any error, warning or prompt because a reading was unavailable at the moment they acted. |
-| R5 | As the PM, I need to analyse a named individual and a named booking, because "which partner did this" is the question the data exists to answer. | **(a)** Permit analysis down to an individual partner user, a named booking and a named action, and keep that analysis available to the PM for as long as the data is held. **(b)** Require evidence other than location before any payout, posture, access or disciplinary consequence is applied to an individual. | Apply a consequence to an individual on the strength of location data alone (G4). |
+| R5 | As the PM, I need to analyse a named individual and a named booking, and to understand how partner users behave in aggregate — because "which partner did this" and "where does this role actually work from" are the questions the data exists to answer. | **(a)** Permit analysis down to an individual partner user, a named booking and a named action, and keep that analysis available to the PM for as long as the data is held. **(b)** Require evidence other than location before any payout, posture, access or disciplinary consequence is applied to an individual. **(c)** Hold the recorded data where the PM can query it directly — filtering and grouping freely across users, roles, apps, services, task families, action types and dates — without an engineering request for each new question. **(d)** Keep every location record tied to the action it belongs to: what that action was, and the task or booking it relates to where one exists. | **(a)** Apply a consequence to an individual on the strength of location data alone (G4). **(b)** Leave any part of the recorded data reachable only through engineering — every field this spec requires is queryable by the PM. |
 | R6 | As the PM, I must know exactly **whose** location I am looking at — a specific person, beyond doubt, not a device and not a guess — and I must be able to split behaviour by role. | **(a)** Record, against every action, an identifier that names the signed-in partner user uniquely and is never reused for a different person. **(b)** Record the CSP that user acts for. **(c)** Record their role. **(d)** Attribute every action to the user signed in at the instant it happened, re-establishing all three whenever the signed-in user changes without the app restarting. | **(a)** Attribute an action to the device, to a login shared between people, or to a user who was signed in earlier. **(b)** Infer role from the app a user signed in from — a MANAGER may use either app. |
 
 ---
@@ -133,6 +133,8 @@ Lifecycle of the **location context of an app session** (created when a partner 
 | MQ-7 | For each partner user, and overall: the share of their actions that carry location data. | M2 |
 | MQ-8 | For every recorded action: the identifier, CSP and role of the partner user who performed it — and whether any action is missing any of the three, or carries an identifier that maps to more than one person. | G5 invariant · R6a · R6b · R6c |
 | MQ-9 | The count and identity of partner users producing mock-location readings. | G1 · R2b |
+| MQ-10 | Across all partner users over any date range: how their actions distribute by location, grouped by role, app, service, task family and action type. | Objective · R5c · R5d |
+| MQ-11 | For a named task or booking: every action performed on it, by whom, of what kind, and where. | R5a · R5d |
 
 ---
 
@@ -214,9 +216,18 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 | AC-GRD-1 | **Given** any sample of partner records carrying a coordinate, **When** the sample is inspected, **Then** every one also carries an accuracy radius and a mock flag — zero coordinates appear without both. | G1 · R2a · R2b · R2-MUST NOT · MQ-2 | Settled |
 | AC-GRD-2 | **Given** any sample of partner records, **When** the sample is inspected, **Then** every one carries a non-empty location status from the R3a set. | G2 · R3a · R3-MUST NOT · MQ-3 | Settled |
 | AC-GRD-3 | **Given** a full week of production traffic, **When** MQ-4 is run, **Then** zero partner actions were blocked, delayed or degraded in order to obtain a reading. | G3 invariant · R4-a MUST NOT · MQ-4 | Settled |
-| AC-GRD-4 | **Given** a partner user whose location data suggests actions were performed somewhere unexpected, **When** any payout, posture, access or disciplinary consequence is applied, **Then** a record of non-location evidence supporting it exists. | G4 · R5b · R5-MUST NOT · MQ-5 | Settled |
-| AC-GRD-5 | **Given** a week of captured records, **When** the PM queries for Ramesh Kumar's actions between 25 and 31 Jul, **Then** the result lists each action with his identifier, CSP, role, coordinate, accuracy radius, mock flag, status, app and service. | R5a · R6a · MQ-1 | Settled |
-| AC-GRD-6 | **Given** a full week of production traffic, **When** MQ-8 is run, **Then** every record carries exactly one partner-user identifier with a CSP and a role, and no identifier is found against two different people. | G5 invariant · R6a · R6-a MUST NOT · MQ-8 | Settled |
+| AC-GRD-4 | **Given** a partner user whose location data suggests actions were performed somewhere unexpected, **When** any payout, posture, access or disciplinary consequence is applied, **Then** a record of non-location evidence supporting it exists. | G4 · R5b · R5-a MUST NOT · MQ-5 | Settled |
+| AC-GRD-5 | **Given** a full week of production traffic, **When** MQ-8 is run, **Then** every record carries exactly one partner-user identifier with a CSP and a role, and no identifier is found against two different people. | G5 invariant · R6a · R6-a MUST NOT · MQ-8 | Settled |
+
+### ANL — Analysis (R5)
+
+| AC | Given / When / Then | Verifies | Status |
+|---|---|---|---|
+| AC-ANL-1 | **Given** a week of captured records, **When** the PM queries for Ramesh Kumar's actions between 25 and 31 Jul, **Then** the result lists each action with his identifier, CSP, role, the kind of action, the task or booking it belonged to, coordinate, accuracy radius, mock flag, status, app and service. | R5a · R5d · R6a · MQ-1 | Settled |
+| AC-ANL-2 | **Given** a month of captured records, **When** the PM writes their own query grouping every action by role and by service and asks where those actions happened, **Then** the result covers every partner user who acted that month and returns without an engineering request. | R5c · R5-b MUST NOT · MQ-10 | Settled |
+| AC-ANL-3 | **Given** BKG-2026-07-118342, on which Ramesh assigned a technician and Sunil then completed the on-site sequence, **When** the PM queries that booking, **Then** every action performed on it is listed with who performed it, what kind of action it was, and where they were. | R5a · R5d · MQ-11 | Settled |
+| AC-ANL-4 | **Given** a week in which tasks of all six families were worked — INSTALL, RESTORE, RECHARGE, NETBOX_PICKUP, OUTAGE and SHIFTING — **When** the PM queries by task family, **Then** actions from every one of the six are present, and screen opens appear alongside submissions. | R1b · R5c · R5d · MQ-10 | Settled |
+| AC-ANL-5 | **Given** the retention period once Engineering has set it, **When** the PM queries the oldest data still inside it, **Then** every field this spec requires is present and queryable on those records. | R5a · R5c | Settled |
 
 ---
 
@@ -249,7 +260,8 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | Change the target accuracy without an app release. | C-01 |
 | Distinguish "no reading available" from "device location switched off" as separate observable states. | R3a · G2 · MQ-3 |
 | Discard a reading when the session ends or the signed-in user changes, so no cross-user reading is ever attached. | T7 · T8 |
-| Query stored location data per named individual, named booking and named action, over a chosen date range, for as long as the data is held. | R5a · MQ-1 · AC-GRD-5 |
+| Hold the recorded data where the PM can query it directly — grouping and filtering across users, roles, apps, services, task families, action types and dates — for as long as the data is held, without an engineering request per question. | R5a · R5c · MQ-1 · MQ-10 · AC-ANL-1 · AC-ANL-2 |
+| Preserve the link from each location record to the action it belongs to, and to that action's task or booking where one exists. | R5d · MQ-11 · AC-ANL-3 |
 
 ---
 
