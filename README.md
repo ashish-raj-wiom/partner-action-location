@@ -8,4 +8,4 @@ Who performed each action in the CSP App and the Technician App, and where they 
 - `Partner_Action_Location_Tradeoffs.md` — tradeoffs register: 20 decisions, options rejected, stated reasons
 - `Partner_Action_Location_PRD.md` — source of truth
 
-Status: **v1.4 — in review.** Content complete, every requirement ruled on. 3 open questions; Legal review not yet started.
+Status: **v1.5 — in review.** Content complete, every requirement ruled on. 3 open questions; Legal review not yet started.

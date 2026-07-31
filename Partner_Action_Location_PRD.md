@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — In review | **Sign-off** — Pending |
-| **Version** — v1.4 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v1.5 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -150,11 +150,12 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 | AC-CAP-2 | **Given** C-01 at 20 m but the best the device can report is a 500 m accuracy radius, **When** Sunil acts, **Then** the record carries that coordinate with accuracy 500 m — the coordinate is still recorded, the accuracy is reported as 500 m and not as 20 m, and the action is not delayed to obtain a better one. | R2a · C-01 · T6 · P1 | Settled |
 | AC-CAP-3 | **Given** Ramesh signed in with the device's location setting switched off, **When** he opens a task drilldown, **Then** that **screen open** is recorded with status *device location switched off* and no coordinate. | R1b · R3a · T3 · T6 · G2 | Settled |
 | AC-CAP-4 | **Given** Sunil in a session where no reading is available, **When** he taps a CTA, **Then** the record carries status *no reading available* — the status is present and non-empty. | R3a · T6 · G2 | Settled |
-| AC-CAP-5 | **Given** a device running a mock-location provider reporting 28.4389, 77.0512 while Sunil is two kilometres away, **When** he submits any install step, **Then** the record carries that coordinate with mock flag **true**. | R2b · T6 · G1 · MQ-9 | Settled |
+| AC-CAP-5 | **Given** a device running a mock-location provider reporting 28.4389, 77.0512 while Sunil is two kilometres away, **When** he performs any action, **Then** the record carries that coordinate with mock flag **true**. | R2b · T6 · G1 · MQ-9 | Settled |
 | AC-CAP-6 | **Given** a customer using the customer app at 28.4389, 77.0512, **When** they act, **Then** no latitude, longitude or location status is recorded against them. | R1-a MUST NOT · §1 Boundary | Settled |
 | AC-CAP-7 | **Given** either app at the login screen with nobody signed in, **When** any interaction occurs, **Then** no latitude, longitude or location status is recorded. | R1-b MUST NOT | Settled |
 | AC-CAP-8 | **Given** Sunil acting at 14:00:00, **When** his action is recorded, **Then** the location was fetched at 14:00:00 as part of that action — no later pass adds or changes the coordinate on it. | R2c · T6 | Settled |
-| AC-CAP-9 | **Given** Sunil signed in, **When** he submits any install step, **Then** the record carries his identifier `tech_31907`, his CSP **WIOM-GGN-0472** and his role **TECHNICIAN** — all three present on that one record, with no lookup needed to know who acted. | R6a · R6b · R6c · T6 · G5 | Settled |
+| AC-CAP-9 | **Given** Sunil signed in, **When** he performs actions of four different kinds in one session — opens the feed, opens a netbox-recovery drilldown, submits an install step, and opens his wallet — **Then** every one of those four records carries his identifier `tech_31907`, his CSP **WIOM-GGN-0472** and his role **TECHNICIAN**, with no lookup needed to know who acted. | R6a · R6b · R6c · T6 · G5 | Settled |
+| AC-CAP-10 | **Given** a week in which Ramesh and Sunil work tasks of all six families — INSTALL, RESTORE, RECHARGE, NETBOX_PICKUP, OUTAGE and SHIFTING — and also sign in, browse the feed, open drilldowns, use the wallet and open their profiles, **When** the records for that week are inspected, **Then** every action of every kind carries a location status and an identifier, and a coordinate wherever one was available — no task family and no flow is absent. | R1a · R1b · R3a · R6a · T6 · G2 · G5 | Settled |
 
 ### SESS — Session, identity and device-location state (T1–T5, T7, T8)
 
