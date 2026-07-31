@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Partner Action Location — where CSP users work from — v2.0 · 31 Jul 2026</title>
+<title>Partner Action Location — where CSP users work from — v2.1 · 31 Jul 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   :root {
@@ -156,7 +156,7 @@
 <main>
 <header class="doc">
   <h1>Partner Action Location — where CSP users work from</h1>
-<table><tr><td><strong>Owner</strong> — Ashish Raj (PM)</td><td><strong>Reviewer</strong> — TBD (Eng Lead)</td><td><strong>Status</strong> — In review</td><td><strong>Sign-off</strong> — Pending</td></tr><tr><td><strong>Version</strong> — v2.0 · 31 Jul 2026</td><td><strong>Consulted — Legal/DPDP</strong> — TBD</td><td><strong>Consulted — Android</strong> — TBD</td><td><strong>Consulted — Analytics</strong> — TBD</td></tr></table>
+<table><tr><td><strong>Owner</strong> — Ashish Raj (PM)</td><td><strong>Reviewer</strong> — TBD (Eng Lead)</td><td><strong>Status</strong> — In review</td><td><strong>Sign-off</strong> — Pending</td></tr><tr><td><strong>Version</strong> — v2.1 · 31 Jul 2026</td><td><strong>Consulted — Legal/DPDP</strong> — TBD</td><td><strong>Consulted — Android</strong> — TBD</td><td><strong>Consulted — Analytics</strong> — TBD</td></tr></table>
 </header>
 
 <section class="spec" id="s1">
@@ -273,7 +273,7 @@ flowchart TD
 <section class="spec" id="open-questions">
   <h2><span class="num">—</span> Open questions</h2>
 <p>Recorded as <strong>OV-7</strong>. Each must be closed before sign-off.</p>
-<table><tr><th>#</th><th>Question</th><th>Owner</th></tr><tr><td>1</td><td>How long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 for as long as the data is held (R5a); the retention period itself is Engineering's to propose.</td><td>Engineering</td></tr><tr><td>2</td><td>What range should C-01 carry? The 20 m default is set; the tolerable range depends on what field devices achieve without adding latency (OV-5).</td><td>Engineering</td></tr><tr><td>3</td><td>Reviewer, and the Legal/DPDP, Android and Analytics consulted names.</td><td>PM</td></tr></table>
+<table><tr><th>#</th><th>Question</th><th>Owner</th></tr><tr><td>1</td><td>Where is the recorded data stored, and how does it get there? Engineering's to choose. Whatever is chosen has to satisfy R5c (every required field queryable directly by the PM, grouped and filtered freely, without a request per question), R5d (each record still tied to the action it belongs to and to that action's task or booking), R2c (the location captured as part of the action, not reconciled onto it later) and R1c (an action defined in future inherits the capture without being wired up for it).</td><td>Engineering</td></tr><tr><td>2</td><td>How long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 for as long as the data is held (R5a); the retention period itself is Engineering's to propose.</td><td>Engineering</td></tr><tr><td>3</td><td>What range should C-01 carry? The 20 m default is set; the tolerable range depends on what field devices achieve without adding latency (OV-5).</td><td>Engineering</td></tr><tr><td>4</td><td>Reviewer, and the Legal/DPDP, Android and Analytics consulted names.</td><td>PM</td></tr></table>
   <hr class="sect-end">
 </section>
 

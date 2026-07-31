@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — In review | **Sign-off** — Pending |
-| **Version** — v2.0 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v2.1 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -274,9 +274,10 @@ Recorded as **OV-7**. Each must be closed before sign-off.
 
 | # | Question | Owner |
 |---|---|---|
-| 1 | How long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 for as long as the data is held (R5a); the retention period itself is Engineering's to propose. | Engineering |
-| 2 | What range should C-01 carry? The 20 m default is set; the tolerable range depends on what field devices achieve without adding latency (OV-5). | Engineering |
-| 3 | Reviewer, and the Legal/DPDP, Android and Analytics consulted names. | PM |
+| 1 | Where is the recorded data stored, and how does it get there? Engineering's to choose. Whatever is chosen has to satisfy R5c (every required field queryable directly by the PM, grouped and filtered freely, without a request per question), R5d (each record still tied to the action it belongs to and to that action's task or booking), R2c (the location captured as part of the action, not reconciled onto it later) and R1c (an action defined in future inherits the capture without being wired up for it). | Engineering |
+| 2 | How long is location data retained? The product requirement is that the PM can run the analysis in MQ-1 for as long as the data is held (R5a); the retention period itself is Engineering's to propose. | Engineering |
+| 3 | What range should C-01 carry? The 20 m default is set; the tolerable range depends on what field devices achieve without adding latency (OV-5). | Engineering |
+| 4 | Reviewer, and the Legal/DPDP, Android and Analytics consulted names. | PM |
 
 ---
 

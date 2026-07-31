@@ -1,6 +1,6 @@
 # Partner Action Location — Tradeoffs Register
 
-Companion to `Partner_Action_Location_PRD.md` (v2.0). Not part of the PRD. This is the PM's record of every decision taken while writing it — what was chosen, what was rejected, and why — so the reasoning survives outside the spec.
+Companion to `Partner_Action_Location_PRD.md` (v2.1). Not part of the PRD. This is the PM's record of every decision taken while writing it — what was chosen, what was rejected, and why — so the reasoning survives outside the spec.
 
 Interview and drafting: 29–31 July 2026. Owner: Ashish Raj.
 
