@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD (Eng Lead) | **Status** — In review | **Sign-off** — Pending |
-| **Version** — v1.6 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
+| **Version** — v1.7 · 31 Jul 2026 | **Consulted — Legal/DPDP** — TBD | **Consulted — Android** — TBD | **Consulted — Analytics** — TBD |
 
 ---
 
@@ -81,6 +81,7 @@ flowchart TD
 
 **Precedence.**
 - **P1 — the action never waits for the reading.** An action performed while a location request is in flight is recorded immediately with whatever reading already exists, or with status *no reading available* if none exists. A reading that arrives afterwards is not attached to it (AC-RACE-1, AC-RACE-2, G3).
+- **P2 — an action belongs to whoever performed it.** If the signed-in user changes while an action is still being recorded, that action stays attributed to the user who performed it, never to the incoming one (T7, AC-RACE-3, G5).
 
 ### 3b. State transition table — canon
 
@@ -197,13 +198,13 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 | AC-REG-6 | **Given** this feature live, **When** the flows that carry no task are exercised — sign-in, the feed, every task drilldown, wallet and withdrawal, and profile — **Then** each behaves exactly as in the pre-change build. | §1 Boundary · G3 | Settled |
 | AC-REG-7 | **Given** this feature live, **When** any action in any flow fails for its own reasons — a rejected submission, a network error, a validation failure — **Then** it fails the same way and with the same message as in the pre-change build, with no location-related wording anywhere in the failure. | §1 Boundary · R4-b MUST NOT · G3 | Settled |
 
-### RACE — Precedence rule (P1)
+### RACE — Precedence rules (P1, P2)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-RACE-1 | **Given** a location request in flight with no reading yet, **When** Sunil acts and the reading arrives 200 ms later, **Then** his action was already recorded with status *no reading available*, and the late reading is not attached to it. | P1 · R2c · R3a · T6 | Settled |
 | AC-RACE-2 | **Given** a reading already available and two actions performed within the same 100 ms, **When** both are recorded, **Then** both carry that same coordinate with its accuracy radius and mock flag, and neither action was delayed. | P1 · R2a · R2b · T6 | Settled |
-| AC-RACE-3 | **Given** Sunil signed in and an action in flight, **When** the signed-in user is replaced by Ramesh before that action is recorded, **Then** the action is attributed to Sunil, who performed it — not to Ramesh. | R6d · R6-a MUST NOT · T7 · G5 | Settled |
+| AC-RACE-3 | **Given** Sunil signed in and an action in flight, **When** the signed-in user is replaced by Ramesh before that action is recorded, **Then** the action is attributed to Sunil, who performed it — not to Ramesh. | P2 · R6d · R6-a MUST NOT · T7 · G5 | Settled |
 
 ### DUP — Duplicate triggers
 
@@ -241,7 +242,7 @@ All examples use a synthetic partner: CSP **WIOM-GGN-0472**, owner **Ramesh Kuma
 | Partner user | **Canonical definition:** a person signed in to the CSP app or the Technician app in one of the C-02 roles. Excludes customers and unauthenticated users. All other mentions cite this definition. | Partner operations |
 | Action | **Canonical definition:** any interaction a partner user has with either app that the app already reports — a screen open, a tap, a submission. Not limited to interactions that change a task's state (R1b). Every one of these is already defined and logged today as a CleverTap event, each carrying its own event properties and a timestamp — so the actions this spec covers are the events already defined. The set is not closed: any action defined in future joins it from the moment it ships (R1c). | Product |
 | Identifier | **Canonical definition:** the value that names one partner user and only ever that person. It must be unique across all partner users, stable for the life of that person's relationship with Wiom, and never reissued to somebody else — otherwise two people's movements merge into one history (R6a, G5). | Partner operations |
-| Reading | A single location obtained from the device, carrying a latitude, a longitude and an accuracy radius. | — |
+| Reading | A single location obtained from the device, carrying a latitude, a longitude, an accuracy radius, and whether it came from a mock provider. | — |
 | Accuracy radius | The device's own estimate, in metres, of how far the true position may be from the reported coordinate. A satellite reading is typically tens of metres; one derived from WiFi or cell towers can be hundreds of metres or more. A large radius is not an error — it is an honest statement of imprecision, which is why R2a requires it alongside every coordinate. | — |
 | Location status | The single value recorded against every partner action explaining what location it carries. R3a is the canonical list of values; no other section restates it. | Product |
 | Mock location | A coordinate injected by a mock-location provider rather than measured by the device. Android exposes a mock-location setting that any spoofing app can be pointed at, and reports per reading whether it was used. R2b requires the flag alongside every coordinate so a fabricated reading is never indistinguishable from a measured one. | — |
@@ -290,5 +291,5 @@ Recorded as **OV-7**. Each must be closed before sign-off.
 | **OV-3** — §7 AC citations use `Rn-x MUST NOT` for negative sub-obligations. | The template's `R5b` form is ambiguous when both the MUST and MUST NOT cells are lettered, as several rules here are. Negative obligations are cited as `R4-a MUST NOT`. | Without it, coverage of the MUST NOT column cannot be checked mechanically. | Ashish Raj (PM), 29 Jul 2026 |
 | **OV-4** — §4 requires a block per screen the feature touches. | No screen blocks appear; §4 states that no screen is added or changed. | Every screen involved — the permission flow and the device-location-off prompt — already exists in both apps. Specifying them would create a second home for facts this document does not govern. | Ashish Raj (PM), 30 Jul 2026 |
 | **OV-5** — §5 requires a range for every C-id. | C-01 carries a default of 20 m but no range. | The tolerable range depends on what devices in the field can actually achieve without adding latency, which Engineering is better placed to measure than the PM is to guess. | Ashish Raj (PM), 30 Jul 2026 |
-| **OV-7** — the template defines no Open-questions section. | One is added after §9, replacing the AI-generated-content section now that every generated item has been ruled on. | Four questions remain and two of them are Engineering's, not the PM's. Dropping them to close the section would lose them; leaving an empty review table would say nothing. | Ashish Raj (PM), 30 Jul 2026 |
 | **OV-6** — §7 requires boundary-value and configurability ACs where a limit or a runtime-changeable parameter exists. | Neither group appears. | C-01 is a target the app aims for rather than a threshold that changes behaviour at its edges — AC-CAP-2 covers what happens when it is not met. No other PM-owned numeric limit exists. | Ashish Raj (PM), 30 Jul 2026 |
+| **OV-7** — the template defines no Open-questions section. | One is added after §9, replacing the AI-generated-content section now that every generated item has been ruled on. | Questions remain and two of them are Engineering's, not the PM's. Dropping them to close the section would lose them; leaving an empty review table would say nothing. | Ashish Raj (PM), 30 Jul 2026 |
